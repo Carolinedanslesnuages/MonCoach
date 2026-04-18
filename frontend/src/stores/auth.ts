@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(email: string, password: string) {
     const cred = await createUserWithEmailAndPassword(auth, email, password)
     user.value = cred.user
-    await api.post('/users/me', { email })
+    await api.post('/users/profile', { email })
     profile.value = null
   }
 

@@ -107,7 +107,7 @@ function nextStep() { error.value = ''; if (currentStep.value === 1 && form.valu
 async function submitOnboarding() {
   error.value = ''; submitting.value = true
   try {
-    await api.post('/users/me', { ...form.value, lastPeriodDate: form.value.cycleTracking ? form.value.lastPeriodDate : null })
+    await api.post('/users/profile', { ...form.value, lastPeriodDate: form.value.cycleTracking ? form.value.lastPeriodDate : null })
     await authStore.refreshProfile(); router.push('/')
   } catch { error.value = "Erreur lors de l'enregistrement." } finally { submitting.value = false }
 }
