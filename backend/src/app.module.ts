@@ -47,7 +47,7 @@ import { AuditModule } from './audit/audit.module';
               }),
             });
           } else {
-            // Initialise with applicationDefault for environments like Cloud Run
+            // Initialize with applicationDefault for environments like Cloud Run
             admin.initializeApp();
           }
         }

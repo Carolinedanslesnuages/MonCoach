@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GeminiService } from '../gemini/gemini.service';
 import { HealthLogsService } from '../health-logs/health-logs.service';
@@ -9,6 +9,8 @@ type ProfileWithMedications = Profile & { medications: Medication[] };
 
 @Injectable()
 export class MealsService {
+  private readonly logger = new Logger(MealsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly gemini: GeminiService,
@@ -100,7 +102,11 @@ Be concise, evidence-based, and avoid alarming language. Focus on practical, act
     let aiAnalysis: string | undefined;
     try {
       aiAnalysis = await this.gemini.generateText(prompt);
-    } catch {
+    } catch (error) {
+      this.logger.error(
+        `Gemini meal analysis failed for user ${user.id}`,
+        error,
+      );
       aiAnalysis = undefined;
     }
 
