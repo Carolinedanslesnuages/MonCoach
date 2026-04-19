@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String      @id @default(uuid())
+  firebaseUid String      @unique
+  email       String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  profile     Profile?
+  healthLogs  HealthLog[]
+  meals       Meal[]
+  cycleLogs   CycleLog[]
+}
+
+model Profile {
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  healthFocus     String[]
+  heightCm        Float?
+  weightKg        Float?
+  lovedFoods      String[]
+  hatedFoods      String[]
+  medicalContext  String?
+  medications     Medication[]
+  cycleEnabled    Boolean      @default(false)
+  lastPeriodStart DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Medication {
+  id        String   @id @default(uuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  dosage    String?
+  createdAt DateTime @default(now())
+}
+
+model HealthLog {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loggedAt         DateTime @default(now())
+  systolic         Int?
+  diastolic        Int?
+  weightKg         Float?
+  glycemia         Float?
+  proteinuria      Float?
+  ferritin         Float?
+  crp              Float?
+  tsh              Float?
+  hba1c            Float?
+  ldl              Float?
+  medicationLevel  Float?
+  hasEdema         Boolean  @default(false)
+  notes            String?
+  medicationsTaken String[]
+  isPeriodStart    Boolean  @default(false)
+  hydrationLiters  Float?
+  createdAt        DateTime @default(now())
+}
+
+model Meal {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description String
+  mealType    String?
+  aiAnalysis  String?
+  loggedAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model CycleLog {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  phase      String
+  dayInCycle Int
+  loggedAt   DateTime @default(now())
+}
